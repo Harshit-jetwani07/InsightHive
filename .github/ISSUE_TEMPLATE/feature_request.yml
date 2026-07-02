@@ -1,0 +1,36 @@
+name: Feature request
+description: Propose a scoped improvement to InsightHive.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or user need
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Acceptance criteria
+      description: Describe observable behavior and required evidence.
+    validations:
+      required: true
+  - type: checkboxes
+    id: impact
+    attributes:
+      label: Impact areas
+      options:
+        - label: Agent routing or prompts
+        - label: Deterministic tools
+        - label: Security or governance
+        - label: Evaluation
+        - label: UI/UX
+        - label: Documentation or deployment
+

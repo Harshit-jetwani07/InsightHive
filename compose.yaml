@@ -1,0 +1,22 @@
+name: insight-hive
+
+services:
+  insight-hive:
+    build: .
+    ports:
+      - "8501:8080"
+    env_file:
+      - .env.docker
+    environment:
+      PORT: "8080"
+      APP_ENV: "development"
+      ALLOW_GUEST_DEMO: "true"
+    volumes:
+      - app-data:/app/data
+      - app-uploads:/app/uploads
+      - app-reports:/app/reports
+
+volumes:
+  app-data:
+  app-uploads:
+  app-reports:

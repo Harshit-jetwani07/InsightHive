@@ -1,0 +1,30 @@
+substitutions:
+  _SERVICE_NAME: insight-hive
+  _REGION: asia-south1
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/${_SERVICE_NAME}:$COMMIT_SHA
+      - .
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/${_SERVICE_NAME}:$COMMIT_SHA
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE_NAME}
+      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/${_SERVICE_NAME}:$COMMIT_SHA
+      - --region=${_REGION}
+      - --platform=managed
+      - --allow-unauthenticated
+      - --set-env-vars=PYTHONUNBUFFERED=1,APP_ENV=production,ALLOW_GUEST_DEMO=true,ADK_MODEL=gemini-2.5-flash
+      - --update-secrets=GOOGLE_API_KEY=GOOGLE_API_KEY:latest,BOOTSTRAP_ADMIN_USERNAME=BOOTSTRAP_ADMIN_USERNAME:latest,BOOTSTRAP_ADMIN_EMAIL=BOOTSTRAP_ADMIN_EMAIL:latest,BOOTSTRAP_ADMIN_PASSWORD=BOOTSTRAP_ADMIN_PASSWORD:latest
+
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/${_SERVICE_NAME}:$COMMIT_SHA

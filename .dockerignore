@@ -1,0 +1,12 @@
+.git
+.venv
+venv
+__pycache__
+*.pyc
+.env
+data/*.db
+uploads/*
+reports/*
+exports/*
+submission_assets/*.pptx
+dist

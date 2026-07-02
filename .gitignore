@@ -1,0 +1,31 @@
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+.env
+.env.docker
+dist/
+.streamlit/secrets.toml
+.venv/
+venv/
+env/
+
+# Local runtime data
+data/*.db
+uploads/*
+reports/*
+exports/*
+
+# Keep folders available in repo
+!uploads/.gitkeep
+!data/.gitkeep
+!reports/.gitkeep
+!exports/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.agents/
+.codex/

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "quality-routing",
+    "question": "Is the active dataset analysis-ready? Inspect its quality and explain the main issue.",
+    "expected_tool": "evaluate_data_quality"
+  },
+  {
+    "id": "statistics-routing",
+    "question": "Summarize the active dataset's numeric KPIs using verified statistics.",
+    "expected_tool": "get_summary_statistics"
+  },
+  {
+    "id": "anomaly-routing",
+    "question": "Find unusual records in the active dataset and explain their risk.",
+    "expected_tool": "detect_anomaly_records"
+  },
+  {
+    "id": "forecast-routing",
+    "question": "Forecast Revenue using Parsed_Date for 8 future periods.",
+    "expected_tool": "run_forecast"
+  },
+  {
+    "id": "mcp-routing",
+    "question": "For this retail business, fetch the industry KPI playbook before recommending actions.",
+    "expected_tool": "mcp_get_industry_kpi_playbook"
+  },
+  {
+    "id": "report-routing",
+    "question": "Ask the report specialist to gather grounded business context for an executive report.",
+    "expected_tool": "get_business_context_snapshot"
+  },
+  {
+    "id": "overview-routing",
+    "question": "Before deciding anything, inspect the active dataset schema, row count, and available fields.",
+    "expected_tool": "get_dataset_overview"
+  },
+  {
+    "id": "correlation-routing",
+    "question": "Use a verified analytical tool to identify the strongest relationships between numeric KPIs.",
+    "expected_tool": "get_correlation_insights"
+  },
+  {
+    "id": "pipeline-routing",
+    "question": "Run the complete reproducible governed analysis pipeline for the active dataset.",
+    "expected_tool": "run_full_analysis_pipeline"
+  },
+  {
+    "id": "hitl-gate-routing",
+    "question": "A report is still pending human review. Ask governance to verify whether publication or download is allowed.",
+    "expected_tool": "check_publish_gate"
+  }
+]

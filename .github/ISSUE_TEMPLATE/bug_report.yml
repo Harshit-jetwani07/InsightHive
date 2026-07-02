@@ -1,0 +1,44 @@
+name: Bug report
+description: Report a reproducible InsightHive defect without private data.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Never include API keys, passwords, private datasets, or admin credentials."
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Observed behavior
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      placeholder: "1. Start Docker...\n2. Load sample...\n3. Run mission..."
+    validations:
+      required: true
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: Runtime
+      options:
+        - Full ADK Docker
+        - Cloud Run
+        - Native local
+        - Quota-resilient local mode
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Commit SHA or release
+

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "dataset-context",
+    "scenario": "Describe the active dataset before analysis.",
+    "expected_tool": "get_dataset_overview",
+    "required_keys": ["filename", "rows", "columns"]
+  },
+  {
+    "id": "quality-gate",
+    "scenario": "Check whether the uploaded data is analysis-ready.",
+    "expected_tool": "evaluate_data_quality",
+    "required_keys": ["score", "grade"]
+  },
+  {
+    "id": "kpi-summary",
+    "scenario": "Summarize the numeric KPIs.",
+    "expected_tool": "get_summary_statistics",
+    "required_keys": ["numeric_columns", "summary_stats"]
+  },
+  {
+    "id": "relationships",
+    "scenario": "Find the strongest relationships between metrics.",
+    "expected_tool": "get_correlation_insights",
+    "required_keys": ["filename"]
+  },
+  {
+    "id": "governed-pipeline",
+    "scenario": "Run the complete reproducible analysis pipeline.",
+    "expected_tool": "run_full_analysis_pipeline",
+    "required_keys": ["pipeline", "status", "stages"]
+  }
+]

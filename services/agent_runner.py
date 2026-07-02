@@ -1,0 +1,196 @@
+"""Run Google ADK agents from the Streamlit frontend."""
+
+from __future__ import annotations
+
+import asyncio
+import json
+import os
+import time
+from typing import Optional
+
+from google.adk.runners import Runner
+from google.adk.memory import InMemoryMemoryService
+from google.adk.sessions import InMemorySessionService
+from google.genai import types
+
+from agents.orchestrator import root_agent
+from services.guardrails import validate_user_question
+from services.observability import TraceLogger
+
+APP_NAME = "insight_hive"
+
+
+class AgentRunnerService:
+    def __init__(self) -> None:
+        self.session_service = InMemorySessionService()
+        self.memory_service = InMemoryMemoryService()
+        self.runner = Runner(
+            agent=root_agent,
+            app_name=APP_NAME,
+            session_service=self.session_service,
+            memory_service=self.memory_service,
+        )
+        self.tracer = TraceLogger()
+        self._sessions_created: set[tuple[str, str]] = set()
+        self._tool_artifacts: list[dict] = []
+
+    def _ensure_api_key(self, api_key: Optional[str]) -> None:
+        key = (api_key or os.getenv("GOOGLE_API_KEY", "")).strip()
+        if not key:
+            raise ValueError("ADK mode requires GOOGLE_API_KEY; use Sample Intelligence Mode without it.")
+        os.environ["GOOGLE_API_KEY"] = key
+
+    def _ensure_session(self, user_id: str, session_id: str) -> None:
+        key = (user_id, session_id)
+        if key in self._sessions_created:
+            return
+
+        async def _create() -> None:
+            await self.session_service.create_session(
+                app_name=APP_NAME,
+                user_id=user_id,
+                session_id=session_id,
+            )
+
+        asyncio.run(_create())
+        self._sessions_created.add(key)
+
+    def _commit_session_to_memory(self, user_id: str, session_id: str) -> None:
+        async def _commit() -> None:
+            session = await self.session_service.get_session(
+                app_name=APP_NAME,
+                user_id=user_id,
+                session_id=session_id,
+            )
+            if session is not None:
+                await self.memory_service.add_session_to_memory(session)
+
+        asyncio.run(_commit())
+
+    def run_query(
+        self,
+        question: str,
+        *,
+        user_id: str,
+        session_id: str,
+        api_key: Optional[str] = None,
+    ) -> str:
+        allowed, reason = validate_user_question(question)
+        if not allowed:
+            self.tracer.new_trace()
+            self.tracer.log("guardrail_block", status="blocked", detail=reason)
+            return reason
+
+        self._ensure_api_key(api_key)
+        self._ensure_session(user_id, session_id)
+        trace_id = self.tracer.new_trace()
+        self._tool_artifacts = []
+        self.tracer.log("user_query", detail=question[:240])
+        run_started = time.perf_counter()
+        tool_started: dict[str, float] = {}
+
+        content = types.Content(role="user", parts=[types.Part(text=question)])
+        final_response = "No response received from the agent."
+
+        try:
+            events = self.runner.run(
+                user_id=user_id,
+                session_id=session_id,
+                new_message=content,
+            )
+            for event in events:
+                if hasattr(event, "content") and event.content and getattr(event.content, "parts", None):
+                    for part in event.content.parts:
+                        if getattr(part, "function_call", None):
+                            fn = part.function_call
+                            tool_started[getattr(fn, "name", "unknown_tool")] = time.perf_counter()
+                            self.tracer.log(
+                                "tool_call",
+                                agent=getattr(event, "author", "agent"),
+                                tool=getattr(fn, "name", "unknown_tool"),
+                                detail=str(getattr(fn, "args", ""))[:240],
+                            )
+                        if getattr(part, "function_response", None):
+                            fn_resp = part.function_response
+                            tool_name = getattr(fn_resp, "name", "unknown_tool")
+                            raw_response = getattr(fn_resp, "response", "")
+                            payload = self._decode_tool_response(raw_response)
+                            # ADK models agent delegation as an internal function
+                            # response. It is useful in the trace, but it is not
+                            # business evidence and must not inflate tool metrics.
+                            if tool_name != "transfer_to_agent":
+                                self._tool_artifacts.append(
+                                    {
+                                        "tool": tool_name,
+                                        "agent": getattr(event, "author", "agent"),
+                                        "payload": payload,
+                                    }
+                                )
+                            started = tool_started.pop(tool_name, time.perf_counter())
+                            self.tracer.log(
+                                "tool_response",
+                                agent=getattr(event, "author", "agent"),
+                                tool=tool_name,
+                                detail=str(getattr(fn_resp, "response", ""))[:240],
+                                latency_ms=round((time.perf_counter() - started) * 1000),
+                            )
+
+                if hasattr(event, "is_final_response") and event.is_final_response():
+                    if event.content and event.content.parts:
+                        text_parts = [
+                            part.text for part in event.content.parts if getattr(part, "text", None)
+                        ]
+                        if text_parts:
+                            final_response = "\n".join(text_parts).strip()
+                    break
+                elif getattr(event, "type", "") == "final_response" and event.content:
+                    final_response = event.content.parts[0].text
+
+            self.tracer.log(
+                "final_response",
+                detail=final_response[:240],
+                latency_ms=round((time.perf_counter() - run_started) * 1000),
+            )
+            self._commit_session_to_memory(user_id, session_id)
+            return final_response
+        except Exception as exc:
+            self.tracer.log("error", status="error", detail=str(exc))
+            return (
+                f"ADK agent error: {exc}\n\n"
+                "Check that google-adk is installed and your Gemini API key is valid."
+            )
+
+    def get_trace_events(self) -> list[dict]:
+        return self.tracer.get_events()
+
+    @staticmethod
+    def _decode_tool_response(response):
+        value = response
+        if isinstance(value, dict) and set(value) == {"result"}:
+            value = value["result"]
+        if isinstance(value, str):
+            try:
+                return json.loads(value)
+            except json.JSONDecodeError:
+                return value
+        return value
+
+    def get_tool_artifacts(self) -> list[dict]:
+        return list(self._tool_artifacts)
+
+    def get_latest_tool_artifact(self, tool_name: str) -> Optional[dict]:
+        for artifact in reversed(self._tool_artifacts):
+            if artifact["tool"] == tool_name:
+                payload = artifact["payload"]
+                return payload if isinstance(payload, dict) else {"result": payload}
+        return None
+
+
+_runner: Optional[AgentRunnerService] = None
+
+
+def get_agent_runner() -> AgentRunnerService:
+    global _runner
+    if _runner is None:
+        _runner = AgentRunnerService()
+    return _runner
