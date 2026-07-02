@@ -56,7 +56,23 @@ The UI then exposes:
 - MCP, forecast, report, and governance evidence;
 - the final executive synthesis.
 
+## Why InsightHive is different
+
+Most analytics apps stop at charts or chat. InsightHive demonstrates a complete
+agent-owned decision workflow:
+
+| Differentiator | Why it matters |
+| --- | --- |
+| **One objective → full workflow** | The root orchestrator coordinates analysis, industry research, forecasting, reporting, and governance without asking the user to operate separate tabs. |
+| **Evidence-based completion** | A fluent answer is insufficient; Mission Control checks that every objective-specific tool artifact exists. |
+| **Live MCP grounding** | Industry guidance is fetched through an ADK `McpToolset`, not an unused server or prewritten UI response. |
+| **Cross-session memory** | A preference stored in one ADK session is recalled from a fresh session through `LoadMemoryTool`. |
+| **Human authority** | Pending or rejected reports remain locked until an administrator approves a valid revision. |
+| **Honest resilience** | Gemini quota fallback is clearly labelled and never misrepresented as Full ADK or live MCP execution. |
+
 ## Architecture
+
+![InsightHive multi-agent architecture](docs/architecture.png)
 
 ```mermaid
 flowchart LR
@@ -84,6 +100,33 @@ flowchart LR
 
 See [submission/ARCHITECTURE.md](submission/ARCHITECTURE.md) for the governed
 runtime flow.
+
+## Evidence gallery
+
+### Autonomous Mission Control
+
+One objective produced five required evidence tools and passed all five mission
+criteria.
+
+![Mission Control showing 100 percent evidence completion](docs/screenshots/mission-control-success.png)
+
+### MCP, verified context, and forecast artifacts
+
+Raw artifacts remain available for technical audit while the default result
+surface presents a human-readable Decision Brief.
+
+![MCP and forecast evidence artifacts](docs/screenshots/mcp-and-forecast-evidence.png)
+
+### Executive synthesis and governance result
+
+The final response separates observations, forecast, recommendations, and the
+mandatory approval requirement.
+
+![Executive mission synthesis](docs/screenshots/executive-synthesis.png)
+
+Final submission media will additionally include fresh cross-session memory,
+HITL reject/revise/approve, and ten-case routing-evaluation captures from the
+deployed revision.
 
 ## Course concepts demonstrated
 
@@ -200,6 +243,22 @@ In the app, **Evaluation** measures:
 
 Download `adk_evaluation_evidence.json` and attach its headline metrics to the
 writeup. Never fabricate a benchmark; record the final deployed run.
+
+### Verified engineering metrics
+
+| Metric | Verified result | Scope |
+| --- | ---: | --- |
+| Automated tests | **14 / 14 passed** | Guardrails, RAG, report contract, routing registry, mission rubric, sample signals |
+| Deterministic tool contracts | **5 / 5 passed (100%)** | Northstar Retail, recorded July 3, 2026 |
+| Deterministic evaluation latency | **2.48 seconds total** | Local Docker run; not LLM routing latency |
+| Full ADK autonomous mission | **5 / 5 evidence criteria (100%)** | Analysis, live MCP, forecast, report context, publish gate |
+| Full ADK mission tools | **5 evidence tools** | Internal agent-transfer events excluded |
+| Container health | **HTTP 200 `ok`** | Linux Docker runtime |
+| Ten-case ADK routing accuracy | **Pending final deployed run** | Must be captured with active Gemini quota |
+
+The exact deterministic artifact is committed at
+[`submission/evidence/deterministic_tool_evidence.json`](submission/evidence/deterministic_tool_evidence.json).
+Deterministic pass rate is not presented as agent-routing accuracy.
 
 ## Deployment
 

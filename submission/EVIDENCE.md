@@ -14,6 +14,12 @@ Validated in the Linux Docker runtime on **July 2, 2026**:
 | Mission evidence tools | `run_full_analysis_pipeline`, `mcp_get_industry_kpi_playbook`, `run_forecast`, `get_business_context_snapshot`, `check_publish_gate` |
 | Live MCP transport | **Passed** (`ListToolsRequest` and `CallToolRequest` observed) |
 | Quota-resilience rubric | **5/5 deterministic capability checks** |
+| Deterministic tool contracts | **5/5 passed, 100%, 2.48 s total** |
+
+Machine-readable artifact:
+[`submission/evidence/deterministic_tool_evidence.json`](evidence/deterministic_tool_evidence.json).
+This metric verifies tool execution contracts and is not presented as ADK
+routing accuracy.
 
 The quota-resilience path is clearly labelled in the UI and is not represented
 as a Full ADK run. It uses local deterministic tools and TF-IDF retrieval when
@@ -36,10 +42,14 @@ final deployed Full ADK runtime. Do not publish estimated or fabricated scores.
 
 Required screenshots:
 
-1. Agent Mission Control success rubric and dynamic tool timeline.
+1. Agent Mission Control success rubric and dynamic tool timeline —
+   [`docs/screenshots/mission-control-success.png`](../docs/screenshots/mission-control-success.png).
 2. Cross-session memory recall showing `LoadMemoryTool`.
-3. MCP call in Agent Trace.
+3. MCP and forecast artifacts —
+   [`docs/screenshots/mcp-and-forecast-evidence.png`](../docs/screenshots/mcp-and-forecast-evidence.png).
 4. Rejected report → linked revision → approved download.
 5. Ten-case evaluation summary and evidence download.
+6. Executive synthesis —
+   [`docs/screenshots/executive-synthesis.png`](../docs/screenshots/executive-synthesis.png).
 
 Public demo URL: **add after Cloud Run deployment**

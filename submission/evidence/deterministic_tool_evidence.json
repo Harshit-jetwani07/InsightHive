@@ -1,0 +1,42 @@
+{
+  "evaluation_mode": "deterministic_tool_contracts",
+  "recorded_at": "2026-07-03",
+  "dataset": "northstar_retail_demo.csv",
+  "cases": 5,
+  "passed": 5,
+  "pass_rate": 100.0,
+  "latency_ms": 2480,
+  "results": [
+    {
+      "id": "dataset-context",
+      "expected_tool": "get_dataset_overview",
+      "passed": true,
+      "latency_ms": 3
+    },
+    {
+      "id": "quality-gate",
+      "expected_tool": "evaluate_data_quality",
+      "passed": true,
+      "latency_ms": 2
+    },
+    {
+      "id": "kpi-summary",
+      "expected_tool": "get_summary_statistics",
+      "passed": true,
+      "latency_ms": 42
+    },
+    {
+      "id": "relationships",
+      "expected_tool": "get_correlation_insights",
+      "passed": true,
+      "latency_ms": 8
+    },
+    {
+      "id": "governed-pipeline",
+      "expected_tool": "run_full_analysis_pipeline",
+      "passed": true,
+      "latency_ms": 2425
+    }
+  ],
+  "claim_scope": "Deterministic tool execution only; not ADK routing accuracy."
+}

@@ -19,7 +19,7 @@ New-Item -ItemType Directory -Path $stage -Force | Out-Null
 
 $directories = @(
     "agents", "tools", "services", "utils", "pages", "tests", "rag",
-    "mcp_server", "evaluation", "submission", "submission_assets",
+    "mcp_server", "evaluation", "submission", "submission_assets", "docs",
     ".streamlit", ".github", "assets", "data", "uploads", "reports", "exports"
 )
 $files = @(

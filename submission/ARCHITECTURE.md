@@ -5,6 +5,8 @@ ADK root orchestrator. The Streamlit application is the interaction surface;
 ADK owns planning and routing; deterministic tools own calculation; humans own
 publication authority.
 
+![InsightHive judge-facing architecture](../docs/architecture.png)
+
 ## System context
 
 ```mermaid

@@ -33,8 +33,10 @@ decisions.”
 
 ## 0:45–1:55 — Hero demo: one autonomous mission
 
-**Screen:** Enter guest workspace, load Northstar Retail, open Agent Control
-Room. Keep the API-key field hidden.
+**Screen:** Start with the guest workspace already open, Northstar Retail
+loaded, and Agent Control Room visible. Do not spend video time on login,
+installation, Docker commands, the sidebar, or file browsing. Keep the API-key
+field hidden.
 
 **Mission text:**
 
@@ -165,3 +167,15 @@ Built with Google ADK, Gemini, MCP, Streamlit, Docker, and Cloud Run.
 
 Set visibility to **Public**, enable HD processing, verify audio, and confirm the
 final duration is no more than five minutes before attaching it to Kaggle.
+
+## Do not show
+
+- Login or account creation.
+- API keys, `.env.docker`, passwords, or admin credentials.
+- Docker build output, installation, terminal setup, or file explorer.
+- A full code walkthrough or every Streamlit tab.
+- Ten live evaluation cases or long loading spinners.
+- Sample/resilience mode while claiming Full ADK.
+
+Pre-warm the deployed app, keep the hero mission genuine, and use verified
+pre-run evidence for operations that would consume the five-minute limit.
