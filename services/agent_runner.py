@@ -225,7 +225,11 @@ class AgentRunnerService:
             self._commit_session_to_memory(user_id, session_id)
             if final_response == "No response received from the agent.":
                 current_key = (api_key or os.getenv("GOOGLE_API_KEY", "")).strip()
-                self._unavailable_keys.add(current_key)
+                # A completed provider turn can legitimately contain tool calls
+                # without a final text part. That is an orchestration outcome,
+                # not proof of quota exhaustion. Only explicit retryable provider
+                # exceptions (for example HTTP 429/503) may trip the circuit
+                # breaker in the exception handler below.
                 backup_keys = [
                     os.getenv("GOOGLE_API_KEY_2", "").strip(),
                     os.getenv("GOOGLE_API_KEY_3", "").strip(),
