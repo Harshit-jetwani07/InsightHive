@@ -26,7 +26,7 @@ def parse_report_sections(text: str) -> tuple[dict[str, str] | None, str]:
     sections = {}
     for key in REQUIRED_SECTIONS:
         value = str(payload.get(key, "")).strip()
-        if len(value.split()) < 12:
+        if len(value.split()) < 45:
             return None, f"Report section '{key}' is missing or too short."
         sections[key] = value
     return sections, ""

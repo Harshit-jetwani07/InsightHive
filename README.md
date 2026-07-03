@@ -155,6 +155,9 @@ mandatory approval requirement.
 
 The rendered sample PDF is available at
 [`submission/evidence/sample_approved_business_report.pdf`](submission/evidence/sample_approved_business_report.pdf).
+It contains a cover, executive explanation, measured KPI table, segment
+patterns, recommended actions, limitations, a management review checklist, and
+the human-approval publication condition across four readable pages.
 
 ## Course concepts demonstrated
 
@@ -208,7 +211,12 @@ datasets are quality-scored because insight reliability depends on source data.
 
 ## Quick start — Full ADK Docker mode
 
-Prerequisites: Docker Desktop with WSL 2 and a Gemini API key.
+Prerequisites: Docker Desktop with WSL 2 and at least one Gemini API key.
+For a quota-resilient demo, configure up to three keys from separate Google
+projects in `GOOGLE_API_KEY`, `GOOGLE_API_KEY_2`, and `GOOGLE_API_KEY_3`.
+All user-facing ADK workflows share this failover pool. A backup is attempted
+only after an actual provider failure; keys are never displayed in the UI,
+trace, evidence, or repository.
 
 ```powershell
 git clone https://github.com/Harshit-jetwani07/InsightHive.git
@@ -276,7 +284,7 @@ writeup. Never fabricate a benchmark; record the final deployed run.
 
 | Metric | Verified result | Scope |
 | --- | ---: | --- |
-| Automated tests | **14 / 14 passed** | Guardrails, RAG, report contract, routing registry, mission rubric, sample signals |
+| Automated tests | **17 / 17 passed** | Guardrails, full deterministic workflow, RAG, API-key pool, multi-page report, routing registry, mission rubric, sample signals |
 | Deterministic tool contracts | **5 / 5 passed (100%)** | Northstar Retail, recorded July 3, 2026 |
 | Deterministic evaluation latency | **2.48 seconds total** | Local Docker run; not LLM routing latency |
 | Full ADK autonomous mission | **5 / 5 evidence criteria (100%)** | Analysis, live MCP, forecast, report context, publish gate |

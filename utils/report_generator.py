@@ -60,8 +60,20 @@ class ReportGenerator:
 
     def _generate_pdf(self) -> bytes:
         try:
-            # Let FPDF handle the pages naturally based on content size to avoid blank spaces!
-            pdf = FPDF()
+            class InsightHivePDF(FPDF):
+                def footer(inner_self):
+                    inner_self.set_y(-12)
+                    inner_self.set_font("Helvetica", "", 8)
+                    inner_self.set_text_color(120, 130, 145)
+                    inner_self.cell(
+                        0,
+                        5,
+                        f"InsightHive - Human-governed decision support | Page {inner_self.page_no()}",
+                        align="C",
+                    )
+
+            # Let FPDF handle overflow while major sections retain clear page structure.
+            pdf = InsightHivePDF()
             pdf.set_auto_page_break(auto=True, margin=15)
             # Helper to clean characters and strip markdown/layout-breaking text.
             def safe_txt(s):
@@ -95,7 +107,7 @@ class ReportGenerator:
             # Subtitle
             pdf.set_font("Arial", "", 12)
             pdf.set_text_color(140, 150, 170)
-            pdf.cell(0, 10, "Comprehensive Automated Data Intelligence Report", ln=True, align="C")
+            pdf.cell(0, 10, "Evidence-Based Business Performance Report", ln=True, align="C")
             
             pdf.ln(4)
             pdf.set_font("Arial", "I", 10)
@@ -131,7 +143,7 @@ class ReportGenerator:
                 pdf.ln(3)
 
             #  SECTION 1: EXECUTIVE SUMMARY
-            add_section_header("1. Executive Matrix & Operational Overview")
+            add_section_header("1. Executive Summary")
             pdf.set_font("Arial", "", 10)
             pdf.set_text_color(55, 65, 81)
             exec_topic = "Executive Summary Structure Analysis"
@@ -147,7 +159,7 @@ class ReportGenerator:
             pdf.multi_cell(0, 5.0, safe_txt(exec_text))
 
             #  SECTION 2: GRANULAR DATA INSIGHTS
-            add_section_header("2. Comprehensive Quantitative Key Insights")
+            add_section_header("2. Key Findings and Business Meaning")
             pdf.set_font("Arial", "", 10)
             pdf.set_text_color(55, 65, 81)
             findings_text = self._agent_section("KEY_INSIGHTS")
@@ -161,8 +173,27 @@ class ReportGenerator:
                 )
             pdf.multi_cell(0, 5.0, safe_txt(findings_text))
 
+            pdf.ln(4)
+            pdf.set_fill_color(241, 245, 249)
+            pdf.set_text_color(30, 41, 59)
+            pdf.set_font("Arial", "B", 10)
+            pdf.cell(0, 7, "How management should use these findings", ln=1, fill=True)
+            pdf.set_font("Arial", "", 9.5)
+            pdf.multi_cell(
+                0,
+                5.0,
+                "Use the measured figures to decide where a closer review is needed. "
+                "Compare strong and weak segments on more than one KPI, confirm unusual "
+                "records with an operational owner, and do not treat a forecast or "
+                "correlation as proof of a guaranteed outcome.",
+            )
+
+            # Keep the evidence tables readable and ensure the report contains
+            # more than a compressed single content page.
+            pdf.add_page()
+
             #  SECTION 3: DESCRIPTIVE STATISTICAL TABLE
-            add_section_header("3. Primary Quantitative Feature Distribution Matrix")
+            add_section_header("3. Measured Performance Snapshot")
             pdf.set_font("Arial", "", 10)
             pdf.ln(2)
             
@@ -180,7 +211,7 @@ class ReportGenerator:
                 pdf.set_fill_color(30, 58, 138)
                 pdf.set_text_color(255, 255, 255)
                 
-                pdf.cell(metric_w, 7.5, " Statistical Matrix Property", border=1, fill=True)
+                pdf.cell(metric_w, 7.5, " Measure", border=1, fill=True)
                 for col in target_cols:
                     pdf.cell(col_w, 7.5, safe_txt(str(col)[:20]), border=1, fill=True, align="C")
                 pdf.ln()
@@ -204,7 +235,7 @@ class ReportGenerator:
                         row_toggle = not row_toggle
 
             #  SECTION 4: QUALITATIVE PATTERNS
-            add_section_header("4. Qualitative & Categorical Matrix Patterns")
+            add_section_header("4. Category and Segment Patterns")
             pdf.set_font("Arial", "", 10)
             pdf.set_text_color(55, 65, 81)
             
@@ -214,19 +245,30 @@ class ReportGenerator:
                 clean_cat_cols = cat_cols[:3]
 
             if not cat_cols:
-                profile_summary = "Dataset contains zero qualitative or categorical components to extract metrics."
+                profile_summary = (
+                    "The dataset does not contain reliable category fields, so no "
+                    "category-level comparison is included."
+                )
             else:
                 profile_summary = ""
                 for c in clean_cat_cols[:3]:
                     if not self.df[c].empty:
                         top_node = self.df[c].mode()[0]
                         percentage = (self.df[c] == top_node).mean() * 100
-                        profile_summary += f"Within the vertical categorical tracking domain of '{c}', the dominant recurrent node logs on '{top_node}', accounting for a prominent share of {percentage:.2f}% of all documented process records. This high recurrence indicates centralized clusters within this specific workflow branch.\n\n"
+                        profile_summary += (
+                            f"In {c}, the most common value is {top_node}, representing "
+                            f"{percentage:.2f} percent of the available records. This "
+                            "concentration is worth comparing with revenue, profit, cost, "
+                            "returns, or another relevant outcome before management makes "
+                            "a segment-level decision.\n\n"
+                        )
             
             pdf.multi_cell(0, 5.0, safe_txt(profile_summary.strip()))
 
+            pdf.add_page()
+
             #  SECTION 5: STRATEGIC ROADMAP
-            add_section_header("5. Data-Driven Strategic Recommendations Roadmap")
+            add_section_header("5. Recommended Actions")
             pdf.set_font("Arial", "", 10)
             pdf.set_text_color(30, 41, 59)
             
@@ -245,10 +287,33 @@ class ReportGenerator:
             # SECTION 6: LIMITATIONS AND GOVERNANCE
             limitations_text = self._agent_section("LIMITATIONS")
             if limitations_text:
-                add_section_header("6. Limitations & Governance Notes")
+                add_section_header("6. Limitations and Human Review")
                 pdf.set_font("Arial", "", 10)
                 pdf.set_text_color(55, 65, 81)
                 pdf.multi_cell(0, 5.0, safe_txt(limitations_text), border=0)
+
+            add_section_header("7. Management Review Checklist")
+            pdf.set_font("Arial", "", 10)
+            pdf.set_text_color(55, 65, 81)
+            checklist = (
+                "1. Confirm that the data period and business scope match the decision.\n"
+                "2. Review the highest-risk unusual records with the responsible owner.\n"
+                "3. Compare forecast values with actual results as new periods close.\n"
+                "4. Record any rejected recommendation and the reason for rejection.\n"
+                "5. Approve publication only after the evidence and actions are accepted."
+            )
+            pdf.multi_cell(0, 6.0, checklist)
+            pdf.ln(3)
+            pdf.set_fill_color(255, 247, 214)
+            pdf.set_text_color(92, 69, 0)
+            pdf.set_font("Arial", "B", 10)
+            pdf.multi_cell(
+                0,
+                6.0,
+                "Governance requirement: download and publication are permitted only "
+                "after an authorized human reviewer approves this report in InsightHive.",
+                fill=True,
+            )
 
             # Final standard byte output extraction stream
             try:

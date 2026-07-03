@@ -58,7 +58,12 @@ class AIAgent:
                 f"Missing values:\n{missing_summary}\n\n"
                 f"Sample rows:\n{sample_rows}"
             )
-            system_prompt = "You are an expert data analyst assistant. Answer questions based on the provided data context."
+            system_prompt = (
+                "You are a helpful business analyst. Answer from the provided data "
+                "in simple, normal language that a non-technical manager can understand. "
+                "State the direct answer first, explain why it matters, and finish with "
+                "a practical next step. Avoid code, JSON, tool names, and unexplained jargon."
+            )
 
             if self.provider == "gemini":
                 full_prompt = f"{system_prompt}\n\nDATA CONTEXT:\n{data_summary}\n\nQuestion: {question}"

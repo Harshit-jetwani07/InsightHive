@@ -214,7 +214,13 @@ def run_ai_chat(question: str, df, api_key: str) -> str:
 
         runner = get_agent_runner()
         response = runner.run_query(
-            question,
+            (
+                "Answer the following business question in simple, normal language. "
+                "Give the direct answer first, explain why it matters, and suggest one "
+                "practical next step. Do not mention internal agents, tools, JSON, or "
+                "technical implementation details.\n\n"
+                f"Business question: {question}"
+            ),
             user_id=st.session_state.get("username") or "user",
             session_id=st.session_state.get("adk_session_id") or "default",
             api_key=api_key.strip(),
@@ -345,7 +351,10 @@ def execute_agent_mission(mission: str, api_key: str, industry: str) -> dict:
             "appropriate specialists and deterministic tools yourself. Use MCP for "
             "industry context when useful, quantify material risks, include a forecast "
             "when the active schema supports one, and finish with report/governance "
-            "readiness. Do not ask the user to run separate dashboard tabs."
+            "readiness. Do not ask the user to run separate dashboard tabs. Present the "
+            "final answer in plain business language: what was found, why it matters, "
+            "what should happen next, and whether human approval is still required. "
+            "Do not expose JSON, internal tool names, or implementation jargon."
         ),
         user_id=st.session_state.get("username") or "user",
         session_id=mission_id,
@@ -707,6 +716,22 @@ def run_memory_proof(preference: str, api_key: str) -> dict:
         user_id,
         "business-analysis preference remember prioritize revenue region return-rate",
     )
+    if stored.startswith("ADK agent error:"):
+        st.session_state.memory_trace = runner.get_trace_events()
+        return {
+            "source_session": source_session,
+            "recall_session": "not started",
+            "preference": preference,
+            "stored_response": stored,
+            "recalled_response": (
+                "The preference could not be saved because all configured AI services "
+                "were temporarily unavailable. Your existing saved preferences were not "
+                "changed. Please try this memory proof again later."
+            ),
+            "load_memory_called": False,
+            "memory_service_verified": False,
+            "selected_tools": [],
+        }
     if stored == "No response received from the agent." and direct_memories:
         recalled = direct_memories[-1]
         tools = ["adk_memory_service_search"]
@@ -728,6 +753,12 @@ def run_memory_proof(preference: str, api_key: str) -> dict:
         session_id=recall_session,
         api_key=api_key,
     )
+    if recalled.startswith("ADK agent error:"):
+        recalled = (
+            "The preference was saved, but the fresh-session recall could not finish "
+            "because the AI service became temporarily unavailable. Try recall again "
+            "later; the saved preference remains in the session memory service."
+        )
     st.session_state.memory_trace = runner.get_trace_events()
     tools = [item["tool"] for item in runner.get_tool_artifacts()]
     return {
@@ -764,7 +795,8 @@ company '{company_name}' titled '{report_title}'. Address this admin feedback:
 
 Return JSON only with exactly these string keys:
 executive_summary, key_insights, recommendations, limitations.
-Each section must contain at least 12 words. Use only tool-grounded numeric claims."""
+Each section must contain at least 70 words, use clear business language, and
+explain meaning rather than implementation. Use only tool-grounded numeric claims."""
         agent_narrative, _, _ = run_specialist_action(
             prompt,
             api_key,
@@ -780,7 +812,7 @@ Each section must contain at least 12 words. Use only tool-grounded numeric clai
             repair_prompt = f"""Transfer to report_agent and repair this draft.
 Call get_business_context_snapshot, then return valid JSON only with string keys
 executive_summary, key_insights, recommendations, limitations. Each must have
-at least 12 words. Previous validation error: {contract_error}.
+at least 70 words in clear business language. Previous validation error: {contract_error}.
 Admin feedback: {revision_notes or "none"}."""
             agent_narrative, _, _ = run_specialist_action(
                 repair_prompt,
@@ -798,6 +830,32 @@ Admin feedback: {revision_notes or "none"}."""
         rows = context.get("rows", len(df))
         columns = context.get("columns", len(df.columns))
         quality = context.get("quality_score", "scored")
+        numeric_columns = df.select_dtypes(include="number").columns.astype(str).tolist()
+        metric_details = []
+        for column in numeric_columns[:4]:
+            series = pd.to_numeric(df[column], errors="coerce").dropna()
+            if not series.empty:
+                metric_details.append(
+                    f"{column} averages {series.mean():,.2f}, ranges from "
+                    f"{series.min():,.2f} to {series.max():,.2f}"
+                )
+        metric_summary = "; ".join(metric_details) or (
+            "the uploaded file contains no reliable numeric measure for comparison"
+        )
+        category_details = []
+        for column in df.select_dtypes(include=["object", "category"]).columns[:3]:
+            values = df[column].dropna()
+            if not values.empty:
+                top = values.value_counts().index[0]
+                share = 100 * (values == top).mean()
+                category_details.append(
+                    f"{column} is led by {top} at {share:.1f} percent of records"
+                )
+        category_summary = "; ".join(category_details) or (
+            "no stable category concentration was available"
+        )
+        missing_count = int(df.isna().sum().sum())
+        duplicate_count = int(df.duplicated().sum())
         feedback = (
             f" Reviewer feedback addressed: {revision_notes}."
             if revision_notes
@@ -805,24 +863,42 @@ Admin feedback: {revision_notes or "none"}."""
         )
         report_sections = {
             "executive_summary": (
-                f"This governed report analyzes {rows:,} records across {columns} fields "
-                f"with a verified data-quality score of {quality}. Decisions remain "
-                "subject to human review before publication."
+                f"This report reviews {rows:,} business records across {columns} fields. "
+                f"The verified data-quality score is {quality}, with {missing_count:,} "
+                f"missing values and {duplicate_count:,} duplicate rows identified. "
+                "The analysis is designed to help management understand current "
+                "performance, spot material risks, and decide where follow-up is needed. "
+                "The findings should be treated as decision support rather than an "
+                "automatic decision, because publication remains subject to human review "
+                "and approval."
             ),
             "key_insights": (
-                "The deterministic analytics pipeline measured dataset quality, numeric "
-                "performance, correlations, anomalies, and forward-looking trends using "
-                "auditable tool outputs rather than unsupported model claims."
+                f"The clearest measured patterns are as follows: {metric_summary}. "
+                f"Category concentration shows that {category_summary}. These figures "
+                "provide a practical baseline for comparing strong and weak areas. "
+                "Managers should investigate any segment that combines unusually high "
+                "activity with weak profitability, high returns, or poor satisfaction. "
+                "Relationships in the data show where to investigate first, but they do "
+                "not by themselves prove that one factor caused another."
             ),
             "recommendations": (
-                "Prioritize review of flagged anomalies, validate the strongest measurable "
-                "KPI drivers, compare results with the selected industry playbook, and "
-                f"monitor forecast error before committing resources.{feedback}"
+                "First, review the highest-risk unusual records and confirm whether they "
+                "represent genuine business events, data-entry problems, or one-time "
+                "exceptions. Second, compare the strongest measured performance drivers "
+                "across regions, products, or other major segments before reallocating "
+                "budget. Third, use the selected industry playbook as a checklist rather "
+                "than a substitute for company context. Finally, monitor forecast error "
+                f"and actual results before making a large commitment.{feedback}"
             ),
             "limitations": (
-                "Forecasts describe likely direction rather than guaranteed outcomes; "
-                "correlation does not prove causation, and publication remains locked "
-                "until an authorized human reviewer approves the report."
+                "This report reflects only the information present in the active dataset "
+                "at the time of analysis. Forecasts describe a likely direction, not a "
+                "guaranteed result, and unexpected market or operational changes may "
+                "produce different outcomes. Correlation does not establish cause and "
+                "effect. Missing fields, inconsistent definitions, or unrecorded business "
+                "events can also affect interpretation. For these reasons, the report "
+                "remains locked until an authorized human reviewer confirms that the "
+                "evidence and recommendations are suitable for publication."
             ),
         }
         agent_narrative = json.dumps(report_sections)

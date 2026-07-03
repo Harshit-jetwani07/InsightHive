@@ -88,7 +88,11 @@ When a request starts with "AUTONOMOUS MISSION", own the plan end-to-end:
 6. End with a compact executive synthesis that distinguishes observations,
    forecasts, recommendations, and approval requirements.
 If no dataset is loaded, tell the user to upload or load sample data first.
-Keep answers concise, actionable, and grounded in tool outputs.
+Write the user-facing answer in normal business language. Explain what happened,
+why it matters, and what the user should do next. Avoid internal tool names,
+JSON, implementation jargon, and unexplained technical abbreviations outside
+the dedicated trace/evidence views. Keep answers concise, actionable, and
+grounded in tool outputs.
 """,
         tools=[
             run_full_analysis_pipeline,

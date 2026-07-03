@@ -194,14 +194,15 @@ The winning demo sequence is:
 
 ## Evaluation and engineering quality
 
-The repository contains fourteen unit and integration contract tests covering
-guardrails, sample-data signals, vector retrieval, report contracts, routing
+The repository contains seventeen unit and integration tests covering
+guardrails, the complete deterministic business workflow, sample-data signals,
+vector retrieval, API-key pooling, multi-page report contracts, routing
 registry integrity, and mission completion logic. GitHub Actions runs Python
 3.12 compilation, tests, and secret/runtime hygiene checks on every push.
 
 | Verified metric | Result | Claim boundary |
 | --- | ---: | --- |
-| Automated tests | **14/14 passed** | Software and integration contracts |
+| Automated tests | **17/17 passed** | Software and end-to-end integration contracts |
 | Deterministic tool evaluation | **5/5 passed (100%)** | Tool execution, not LLM routing |
 | Deterministic evaluation latency | **2.48 seconds total** | Local Docker run |
 | Autonomous Full ADK mission | **5/5 evidence criteria (100%)** | Analysis, MCP, forecast, report context, publish gate |

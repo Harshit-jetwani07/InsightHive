@@ -8,7 +8,7 @@ Validated in the Linux Docker runtime on **July 3, 2026**:
 
 | Check | Verified result |
 | --- | --- |
-| Automated test suite | **14/14 passed** |
+| Automated test suite | **17/17 passed** |
 | Source compilation | **Passed** |
 | Container health endpoint | **HTTP 200 / `ok`** |
 | Live ADK smoke test | **Root agent selected and completed `run_full_analysis_pipeline`** |
@@ -19,7 +19,7 @@ Validated in the Linux Docker runtime on **July 3, 2026**:
 | Quota-resilient anomaly scan | **50 highest-priority unusual rows returned with severity scores** |
 | Cross-session memory | **Preference recalled through Google ADK Memory Service** |
 | Human approval gate | **Pending download locked; approved download unlocked** |
-| Generated report | **Two-page PDF, 2,300 extracted text characters, visual render passed** |
+| Generated report | **Four-page PDF, 4,434 extracted text characters, visual render passed** |
 | Deterministic tool contracts | **5/5 passed, 100%, 2.48 seconds total** |
 | Quota-resilient contract router | **10/10 passed, 100%** |
 

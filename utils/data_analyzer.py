@@ -13,8 +13,16 @@ class DataAnalyzer:
     def _infer_types(self):
         """Try to parse object columns that look like dates."""
         for col in self.df.select_dtypes(include="object").columns:
+            name_looks_temporal = any(
+                token in str(col).lower()
+                for token in ("date", "time", "month", "year", "quarter", "period")
+            )
+            if not name_looks_temporal:
+                continue
             try:
-                self.df[col] = pd.to_datetime(self.df[col], infer_datetime_format=True)
+                parsed = pd.to_datetime(self.df[col], errors="coerce")
+                if parsed.notna().mean() >= 0.6:
+                    self.df[col] = parsed
             except Exception:
                 pass
 

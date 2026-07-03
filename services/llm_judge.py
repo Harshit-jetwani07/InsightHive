@@ -7,7 +7,7 @@ import re
 
 from tools.data_tools import get_dataset_overview
 from tools.validation_tools import validate_numeric_grounding
-from services.api_keys import is_gemini_key
+from services.api_keys import gemini_key_candidates, is_gemini_key
 
 
 def _deterministic_judge(response: str, note: str = "") -> dict:
@@ -69,14 +69,28 @@ DATASET CONTEXT:
 ANSWER:
 {response[:6000]}
 """
-    try:
-        client = genai.Client(api_key=api_key.strip())
-        result = client.models.generate_content(
-            model="gemini-flash-latest",
-            contents=prompt,
+    result = None
+    failures = []
+    for candidate in gemini_key_candidates(api_key):
+        try:
+            client = genai.Client(api_key=candidate)
+            result = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
+            )
+            client.close()
+            break
+        except Exception as exc:
+            failures.append(type(exc).__name__)
+    if result is None:
+        return _deterministic_judge(
+            response,
+            note=(
+                "Gemini judge was unavailable across all configured projects; "
+                "the local evidence rubric was used instead "
+                f"({', '.join(failures) or 'no usable keys'})."
+            ),
         )
-    except Exception as exc:
-        return _deterministic_judge(response, note=f"Gemini unavailable: {exc}")
     text = (result.text or "").strip()
     match = re.search(r"\{.*\}", text, flags=re.DOTALL)
     if not match:
