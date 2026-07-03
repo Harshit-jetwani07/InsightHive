@@ -2,6 +2,8 @@
 
 Competition: [AI Agents: Intensive Vibe Coding Capstone Project](https://www.kaggle.com/competitions/vibecoding-agents-capstone-project)
 
+**Team:** Jiya Aalwani (Team Lead & Co-Creator) · Harshit Jetwani (Co-Creator)
+
 ## Selected track: Agents for Business
 
 The official track asks for agents that solve compelling enterprise problems

@@ -6,6 +6,8 @@ One objective. Seven coordinated Google ADK agents. Verifiable analysis,
 MCP-grounded recommendations, and human-approved executive reports.
 
 **Track:** Agents for Business  
+**Team:** **Jiya Aalwani (Team Lead & Co-Creator)** and
+**Harshit Jetwani (Co-Creator)**  
 **Public project:** [InsightHive on GitHub](https://github.com/Harshit-jetwani07/InsightHive)
 
 **YouTube demo:** Insert the verified public video URL before submission.
@@ -169,6 +171,11 @@ generates SHA-256 checksums. Virtual environments, databases, secrets, uploads,
 reports, exports, Git history, and bytecode are excluded.
 
 ## Collaboration and reproducibility
+
+InsightHive was collaboratively conceived and built by **Jiya Aalwani** and
+**Harshit Jetwani**, with Jiya serving as the designated Kaggle Team Lead and
+final submission owner. Both teammates contributed as co-creators and are
+credited together across the repository, writeup, and demo.
 
 The project is prepared for a collaborative submission. Agent engineering,
 evaluation, product UX, documentation, and demo production can be reviewed

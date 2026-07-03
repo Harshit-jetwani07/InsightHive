@@ -27,7 +27,7 @@ $files = @(
     "requirements.txt", "requirements-dev.txt", ".python-version", ".env.example",
     ".env.docker.example", ".dockerignore", ".gitignore", ".gitattributes",
     "README.md", "DEPLOYMENT.md", "GITHUB_PUSH_CHECKLIST.md",
-    "CONTRIBUTING.md", "SECURITY.md", "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md", "SECURITY.md", "CODE_OF_CONDUCT.md", "CITATION.cff",
     "RUN_FULL_ADK_DOCKER.ps1",
     "BUILD_CLEAN_SUBMISSION.ps1", "LICENSE"
 )

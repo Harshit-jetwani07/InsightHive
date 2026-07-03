@@ -1,5 +1,7 @@
 # Deployment Guide
 
+**Team:** Jiya Aalwani (Team Lead & Co-Creator) · Harshit Jetwani (Co-Creator)
+
 ## Local Full ADK on Windows
 
 Install Docker Desktop with its WSL 2 backend, then run:

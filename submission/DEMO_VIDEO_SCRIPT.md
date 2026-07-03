@@ -1,5 +1,7 @@
 # InsightHive — Winning Five-Minute Demo Script
 
+**Team:** Jiya Aalwani (Team Lead & Co-Creator) · Harshit Jetwani (Co-Creator)
+
 Maximum permitted length: **5:00**. Target export length: **4:40–4:55**.
 
 Do not wait for long operations on camera. Warm the Cloud Run container, run the
@@ -159,6 +161,7 @@ InsightHive turns one business objective into verified analysis, forecasting,
 MCP-grounded recommendations, and human-approved executive reports.
 
 Track: Agents for Business
+Created by: Jiya Aalwani (Team Lead) and Harshit Jetwani
 Live demo: show the final verified public URL on screen
 GitHub: https://github.com/Harshit-jetwani07/InsightHive
 

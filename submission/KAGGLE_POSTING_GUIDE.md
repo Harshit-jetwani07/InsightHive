@@ -9,6 +9,9 @@ analysis, MCP-grounded recommendations, and human-approved executive reports.
 
 **Track:** Agents for Business
 
+**Team:** Jiya Aalwani (Team Lead & Co-Creator) and Harshit Jetwani
+(Co-Creator)
+
 **Writeup body:** Copy from `submission/WRITEUP.md`. Keep the final body below
 2,500 words.
 
@@ -54,8 +57,8 @@ Recommended captions:
 
 Follow [TEAM_COLLABORATION.md](TEAM_COLLABORATION.md). Confirm every teammate
 has accepted the Kaggle invitation, appears on the final team, and agrees with
-the contribution credits. The designated owner should make the team's only
-final submission.
+the contribution credits. Jiya Aalwani should make the team's only final
+submission after confirming Harshit Jetwani is listed as a teammate.
 
 ## Final Kaggle actions
 

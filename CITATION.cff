@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use InsightHive, please cite this software and both co-creators."
+title: "InsightHive: Governed Multi-Agent Business Intelligence"
+type: software
+version: 1.0.0
+date-released: 2026-07-03
+license: MIT
+authors:
+  - family-names: Aalwani
+    given-names: Jiya
+  - family-names: Jetwani
+    given-names: Harshit
+repository-code: "https://github.com/Harshit-jetwani07/InsightHive"
+url: "https://github.com/Harshit-jetwani07/InsightHive"
+abstract: >-
+  A Google ADK multi-agent system for tool-backed business analysis,
+  MCP-grounded recommendations, forecasting, report generation, and
+  human-governed publication.
+keywords:
+  - Google ADK
+  - multi-agent systems
+  - MCP
+  - business intelligence
+  - human in the loop

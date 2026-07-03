@@ -1,5 +1,7 @@
 # Judge Evidence
 
+**Team:** Jiya Aalwani (Team Lead & Co-Creator) · Harshit Jetwani (Co-Creator)
+
 ## Verified engineering evidence
 
 Validated in the Linux Docker runtime on **July 2, 2026**:

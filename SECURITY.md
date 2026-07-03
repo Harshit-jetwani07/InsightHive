@@ -1,5 +1,7 @@
 # Security Policy
 
+**Maintainers:** Jiya Aalwani and Harshit Jetwani
+
 ## Scope
 
 InsightHive analyzes user-provided business files and can call an external
@@ -56,4 +58,3 @@ Do not open a public issue containing exploit details, private data, or
 credentials. Contact the repository owner privately through the security
 contact configured on the GitHub profile. Include affected revision, impact,
 reproduction steps, and a suggested remediation when possible.
-

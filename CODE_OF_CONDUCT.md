@@ -1,5 +1,7 @@
 # Contributor Code of Conduct
 
+**Maintainers:** Jiya Aalwani and Harshit Jetwani
+
 ## Our commitment
 
 We are committed to a collaborative environment that is respectful, inclusive,
@@ -24,4 +26,3 @@ plagiarism, or misrepresentation of evaluation results is not acceptable.
 Project maintainers may edit or remove unacceptable contributions and restrict
 participation when necessary. Sensitive reports should be sent privately to the
 repository owner rather than posted publicly.
-

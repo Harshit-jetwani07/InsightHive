@@ -962,7 +962,7 @@ with st.sidebar:
     st.image("assets/insighthive-logo.jpeg", use_container_width=True)
     st.markdown(
         '<div class="sidebar-brand"><strong>InsightHive</strong>'
-        '<span>AGENT OPERATIONS CONSOLE</span></div>',
+        '<span>JIYA AALWANI · HARSHIT JETWANI · AGENT OPERATIONS</span></div>',
         unsafe_allow_html=True,
     )
     st.markdown(f"### 👋 Welcome, {st.session_state.username}")

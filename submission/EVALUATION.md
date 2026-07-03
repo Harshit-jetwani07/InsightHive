@@ -1,5 +1,7 @@
 # Evaluation Methodology
 
+**Team:** Jiya Aalwani (Team Lead & Co-Creator) · Harshit Jetwani (Co-Creator)
+
 InsightHive separates deterministic software verification from probabilistic
 agent-routing evaluation. This prevents a passing tool test from being
 misrepresented as proof that an LLM selected the correct tool.
@@ -85,4 +87,3 @@ live MCP call.
 - Report deterministic and agent-routing results separately.
 
 Final deployed metrics belong in [EVIDENCE.md](EVIDENCE.md).
-

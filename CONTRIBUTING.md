@@ -1,5 +1,7 @@
 # Contributing to InsightHive
 
+**Maintainers:** Jiya Aalwani and Harshit Jetwani
+
 InsightHive is maintained as a collaborative Google ADK capstone project.
 Contributions should preserve three properties: agent behavior must be
 observable, numeric claims must come from tools, and report publication must
@@ -83,4 +85,3 @@ Update documentation in the same pull request when behavior changes:
 
 Claims must be reproducible. Do not publish estimated evaluation scores as
 measured results.
-
