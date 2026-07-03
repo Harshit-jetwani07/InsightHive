@@ -118,6 +118,11 @@ surface presents a human-readable Decision Brief.
 
 ![MCP and forecast evidence artifacts](docs/screenshots/mcp-and-forecast-evidence.png)
 
+The lower artifact in this capture contains the twelve-period Revenue forecast,
+trend direction, MAE, RMSE, and forecast points. A dedicated clean Forecast-tab
+capture will replace this combined technical view in the final Kaggle Media
+Gallery.
+
 ### Executive synthesis and governance result
 
 The final response separates observations, forecast, recommendations, and the

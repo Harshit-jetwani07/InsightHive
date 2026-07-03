@@ -28,12 +28,15 @@ directly to the sample experience.
 ## Media Gallery upload order
 
 1. InsightHive logo as required cover image.
-2. Mission Control screenshot.
-3. MCP/trace screenshot.
-4. Memory proof screenshot.
-5. HITL revision screenshot.
-6. Evaluation screenshot.
-7. Public YouTube video.
+2. Architecture diagram.
+3. Mission Control screenshot.
+4. Executive synthesis screenshot.
+5. Clean Forecast-tab screenshot.
+6. MCP/trace screenshot.
+7. Memory proof screenshot.
+8. HITL revision screenshot.
+9. Evaluation screenshot.
+10. Public YouTube video.
 
 Use short captions that explain evidence, not UI decoration.
 
@@ -52,6 +55,11 @@ Recommended captions:
    selection, first-attempt accuracy, retries, and latency.”
 7. **Architecture** — “ADK agents plan and synthesize; deterministic tools
    calculate; MCP grounds; humans authorize publication.”
+
+Current repository assets already cover the logo, architecture, Mission
+Control, MCP/forecast technical evidence, and executive synthesis. Capture the
+Forecast tab, Memory proof, HITL flow, and Evaluation dashboard from the final
+deployed revision so every remaining image reflects the exact submitted build.
 
 ## Collaborative submission
 

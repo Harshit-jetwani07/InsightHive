@@ -61,6 +61,10 @@ latency. A deterministic mission rubric checks whether the objective received
 the evidence it requested. The mission cannot be marked complete merely because
 the model returned fluent text.
 
+### Mission Control proof
+
+![InsightHive Mission Control showing five evidence tools and 100 percent objective completion](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/screenshots/mission-control-success.png)
+
 ## Why agents?
 
 This workflow contains different responsibilities, permissions, and stopping
@@ -80,6 +84,8 @@ process.
 
 ## Architecture and course concepts
 
+![InsightHive Google ADK multi-agent architecture](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/architecture.png)
+
 InsightHive demonstrates four concepts explicitly listed in the competition
 rubric:
 
@@ -95,6 +101,8 @@ The Insight Agent owns a real ADK `McpToolset` connected through stdio to the
 KPI playbook MCP server. The trace records
 `mcp_get_industry_kpi_playbook`, proving that MCP is part of runtime execution
 rather than an unused server in the repository.
+
+![Live MCP and forecast artifacts captured from the autonomous mission](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/screenshots/mcp-and-forecast-evidence.png)
 
 ### 3. Security features
 
@@ -116,7 +124,7 @@ Supporting concepts include ADK sessions, cross-session memory,
 human-in-the-loop revision lineage, tool observability, vector RAG, contract
 validation, and agent-level evaluation.
 
-## Three differentiators
+## Why InsightHive Is Different
 
 ### A mission is scored, not merely answered
 
@@ -140,6 +148,13 @@ orchestrator and checks the tools it selected. It reports pass rate,
 first-attempt accuracy, retry recovery, and latency, with dedicated proof for
 MCP, the governed pipeline, and the HITL publish gate. Results can be downloaded
 as JSON instead of being claimed without evidence.
+
+### Executive decision proof
+
+The agent synthesis separates observations, forward-looking forecast,
+recommendations, and the human approval requirement.
+
+![Executive synthesis and pending human approval evidence](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/screenshots/executive-synthesis.png)
 
 ## Reproducible demo
 
@@ -165,6 +180,18 @@ The repository contains fourteen unit and integration contract tests covering
 guardrails, sample-data signals, vector retrieval, report contracts, routing
 registry integrity, and mission completion logic. GitHub Actions runs Python
 3.12 compilation, tests, and secret/runtime hygiene checks on every push.
+
+| Verified metric | Result | Claim boundary |
+| --- | ---: | --- |
+| Automated tests | **14/14 passed** | Software and integration contracts |
+| Deterministic tool evaluation | **5/5 passed (100%)** | Tool execution, not LLM routing |
+| Deterministic evaluation latency | **2.48 seconds total** | Local Docker run |
+| Autonomous Full ADK mission | **5/5 evidence criteria (100%)** | Analysis, MCP, forecast, report context, publish gate |
+| Container health | **HTTP 200 `ok`** | Linux Docker runtime |
+
+Final ten-case ADK routing accuracy, first-attempt accuracy, and grounding judge
+score will be copied only from the downloadable evidence JSON produced by the
+final deployed revision. No estimated score is presented as measured evidence.
 
 InsightHive also contains a clean-source builder that uses an allow list and
 generates SHA-256 checksums. Virtual environments, databases, secrets, uploads,
