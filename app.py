@@ -1418,7 +1418,7 @@ with st.sidebar:
     st.image("assets/insighthive-logo.jpeg", use_container_width=True)
     st.markdown(
         '<div class="sidebar-brand"><strong>InsightHive</strong>'
-        '<span>JIYA AALWANI · HARSHIT JETWANI · AGENT OPERATIONS</span></div>',
+        '<span>HARSHIT JETWANI · TEAM LEADER &nbsp;|&nbsp; JIYA AALWANI · TEAM MEMBER</span></div>',
         unsafe_allow_html=True,
     )
     st.markdown(f"### 👋 Welcome, {st.session_state.username}")

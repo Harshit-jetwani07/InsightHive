@@ -300,7 +300,7 @@ def show_login_page():
                   <div class="proof-card"><strong>Live evidence</strong><span>Every conclusion is connected to tool calls, traces, forecasts, and measurable success criteria.</span></div>
                   <div class="proof-card"><strong>Human governed</strong><span>Reports remain blocked until the approval gate confirms a reviewer has accepted them.</span></div>
                 </div>
-                <div class="landing-footnote">Created by Jiya Aalwani &amp; Harshit Jetwani · Google × Kaggle AI Agents Capstone</div>
+                <div class="landing-footnote">Harshit Jetwani · Team Leader &amp; Co-Creator &nbsp;|&nbsp; Jiya Aalwani · Team Member &amp; Co-Creator</div>
                 """,
                 unsafe_allow_html=True,
             )

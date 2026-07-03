@@ -1,6 +1,6 @@
 # Evaluation Methodology
 
-**Team:** Jiya Aalwani (Team Lead & Co-Creator) · Harshit Jetwani (Co-Creator)
+**Team:** Harshit Jetwani (Team Leader & Co-Creator) · Jiya Aalwani (Team Member & Co-Creator)
 
 InsightHive separates deterministic software verification from probabilistic
 agent-routing evaluation. This prevents a passing tool test from being

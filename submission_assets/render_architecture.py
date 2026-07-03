@@ -90,7 +90,7 @@ def main(output: str):
     )
     draw.text((1320, 58), "Google ADK", font=font(24, True), fill=TEAL)
     draw.text((1318, 90), "Agents for Business", font=font(16), fill=MUTED)
-    draw.text((1178, 120), "Jiya Aalwani  |  Harshit Jetwani", font=font(15), fill=MUTED)
+    draw.text((1050, 120), "Harshit Jetwani - Team Leader  |  Jiya Aalwani - Team Member", font=font(15), fill=MUTED)
 
     user = (70, 180, 390, 290)
     mission = (500, 180, 1100, 290)

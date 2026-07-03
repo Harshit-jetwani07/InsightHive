@@ -1,6 +1,6 @@
 # Judge Evidence
 
-**Team:** Jiya Aalwani (Team Lead & Co-Creator) · Harshit Jetwani (Co-Creator)
+**Team:** Harshit Jetwani (Team Leader & Co-Creator) · Jiya Aalwani (Team Member & Co-Creator)
 
 ## Verified engineering evidence
 

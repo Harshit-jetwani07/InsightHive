@@ -2,14 +2,14 @@
 
 Official deadline: **July 6, 2026 at 11:59 PM Pacific Time**.
 
-**Team:** Jiya Aalwani (Team Lead & Co-Creator) · Harshit Jetwani (Co-Creator)
+**Team:** Harshit Jetwani (Team Leader & Co-Creator) · Jiya Aalwani (Team Member & Co-Creator)
 
 ## Eligibility requirements
 
 - [ ] Every collaborator accepted the Kaggle team invitation before the
   applicable team-lock/submission deadline.
-- [x] Jiya Aalwani is designated Team Lead and final submission owner.
-- [ ] Harshit Jetwani is visible as an accepted teammate before final Submit.
+- [x] Harshit Jetwani is designated Team Leader and final submission owner.
+- [ ] Jiya Aalwani is visible as an accepted team member before final Submit.
 - [ ] No teammate will create a duplicate submission.
 - [ ] Kaggle Writeup has a title, subtitle, and detailed analysis.
 - [ ] **Agents for Business** track selected.

@@ -1,6 +1,6 @@
 # InsightHive Architecture
 
-**Team:** Jiya Aalwani (Team Lead & Co-Creator) · Harshit Jetwani (Co-Creator)
+**Team:** Harshit Jetwani (Team Leader & Co-Creator) · Jiya Aalwani (Team Member & Co-Creator)
 
 InsightHive is a governed decision-intelligence system built around a Google
 ADK root orchestrator. The Streamlit application is the interaction surface;

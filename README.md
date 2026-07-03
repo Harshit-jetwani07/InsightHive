@@ -10,7 +10,7 @@ MCP-grounded recommendations, and approval-gated executive reports.
 
 **Kaggle track:** Agents for Business  
 **Competition:** [AI Agents: Intensive Vibe Coding Capstone Project](https://www.kaggle.com/competitions/vibecoding-agents-capstone-project)  
-**Team:** **Jiya Aalwani — Team Lead & Co-Creator** · **Harshit Jetwani — Co-Creator**  
+**Team:** **Harshit Jetwani — Team Leader & Co-Creator** · **Jiya Aalwani — Team Member & Co-Creator**
 **Public source:** [github.com/Harshit-jetwani07/InsightHive](https://github.com/Harshit-jetwani07/InsightHive)  
 **Submission status:** GitHub-ready; public demo and video links will be added
 after their final incognito-access checks.
@@ -359,8 +359,8 @@ review before merging. The final Kaggle roster must credit each teammate's
 actual contribution and only one agreed owner should perform the final
 submission.
 
-InsightHive was collaboratively designed and built by **Jiya Aalwani** and
-**Harshit Jetwani**. Jiya Aalwani is the designated Kaggle Team Lead and final
+InsightHive was collaboratively designed and built by **Harshit Jetwani** and
+**Jiya Aalwani**. Harshit Jetwani is the designated Kaggle Team Leader and final
 submission owner; both teammates should appear in the official Kaggle team and
 receive co-creator credit in the writeup, video description, and repository.
 
@@ -376,5 +376,5 @@ their respective terms.
 
 ## Creators
 
-- **Jiya Aalwani** — Team Lead & Co-Creator
-- **Harshit Jetwani** — Co-Creator
+- **Harshit Jetwani** — Team Leader & Co-Creator
+- **Jiya Aalwani** — Team Member & Co-Creator

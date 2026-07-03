@@ -2,10 +2,10 @@
 
 ## Confirmed team
 
-- **Jiya Aalwani — Team Lead & Co-Creator**
-- **Harshit Jetwani — Co-Creator**
+- **Harshit Jetwani — Team Leader & Co-Creator**
+- **Jiya Aalwani — Team Member & Co-Creator**
 
-InsightHive is a joint project. Jiya Aalwani is the designated Kaggle Team Lead
+InsightHive is a joint project. Harshit Jetwani is the designated Kaggle Team Leader
 and final submission owner. Both creators must appear on the final Kaggle team
 and receive visible credit in the writeup and video description.
 
@@ -34,8 +34,8 @@ One person may own multiple roles.
 
 | Role | Responsibility |
 | --- | --- |
-| Jiya Aalwani — Team Lead | Creates/confirms the Kaggle team and performs final Submit |
-| Harshit Jetwani — Co-Creator | Shared implementation, repository, evidence, and submission support |
+| Harshit Jetwani — Team Leader | Creates/confirms the Kaggle team and performs final Submit |
+| Jiya Aalwani — Team Member & Co-Creator | Shared implementation, evidence, and submission support |
 | Agent engineering | ADK orchestration, specialist instructions, routing evidence |
 | Data and evaluation | Demo dataset, test cases, metrics, evidence JSON |
 | Product and UX | Mission Control, result clarity, accessibility, screenshots |
