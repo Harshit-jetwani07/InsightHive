@@ -14,12 +14,26 @@ from tools.analytics_tools import run_forecast
 from tools.governance_tools import check_publish_gate, get_business_context_snapshot
 from tools.pipeline_tools import run_full_analysis_pipeline
 
-root_agent = LlmAgent(
-    model=MODEL_NAME,
-    name="insight_hive_orchestrator",
-    description="Coordinates business analytics and governed report workflows for uploaded datasets.",
-    generate_content_config=deterministic_config(),
-    instruction="""You are the orchestrator for InsightHive, an enterprise agentic decision-intelligence platform.
+
+def _fresh_specialist(agent: LlmAgent) -> LlmAgent:
+    """Clone a specialist so ADK can attach it to a new root safely."""
+    clone = agent.model_copy(deep=False)
+    clone.parent_agent = None
+    return clone
+
+
+def build_root_agent() -> LlmAgent:
+    """Build an isolated root runtime for each provider-key attempt.
+
+    ADK agents and MCP toolsets retain runtime/session state. Rebuilding them is
+    required when failover switches the Gemini project behind an API key.
+    """
+    return LlmAgent(
+        model=MODEL_NAME,
+        name="insight_hive_orchestrator",
+        description="Coordinates business analytics and governed report workflows for uploaded datasets.",
+        generate_content_config=deterministic_config(),
+        instruction="""You are the orchestrator for InsightHive, an enterprise agentic decision-intelligence platform.
 
 Route work like this:
 - Saved CSV/Excel upload parsing and schema checks -> ingestion_agent
@@ -32,6 +46,27 @@ Route work like this:
 - Past preferences or earlier analysis -> load_memory
 
 Always prefer tool-backed answers over guesses.
+For every dataset question, a plain-text answer without a completed business
+tool call is invalid. Route and execute according to these mandatory rules:
+- readiness, missing values, or quality -> quality_agent, which must call
+  evaluate_data_quality;
+- unusual records, outliers, or anomalies -> quality_agent, which must call
+  detect_anomaly_records;
+- schema, rows, columns, or available fields -> quality_agent, which must call
+  get_dataset_overview;
+- numeric KPI summaries or verified statistics -> analytics_agent, which must
+  call get_summary_statistics;
+- relationships or correlations -> analytics_agent, which must call
+  get_correlation_insights;
+- forecasts or future periods -> analytics_agent, which must call run_forecast;
+- industry KPI playbooks -> call mcp_get_industry_kpi_playbook;
+- executive report context -> report_agent, which must call
+  get_business_context_snapshot;
+- complete governed analysis -> call run_full_analysis_pipeline;
+- publication/download approval -> governance_agent, which must call
+  check_publish_gate.
+Do not merely explain which tool should be used. Execute it and base the final
+answer on its response. Delegation alone is not completion.
 Use load_memory when the user asks what they previously preferred or analyzed.
 When a request starts with "AUTONOMOUS MISSION", own the plan end-to-end:
 1. Inspect the objective and active dataset.
@@ -55,20 +90,23 @@ When a request starts with "AUTONOMOUS MISSION", own the plan end-to-end:
 If no dataset is loaded, tell the user to upload or load sample data first.
 Keep answers concise, actionable, and grounded in tool outputs.
 """,
-    tools=[
-        run_full_analysis_pipeline,
-        build_kpi_mcp_toolset(),
-        run_forecast,
-        get_business_context_snapshot,
-        check_publish_gate,
-        LoadMemoryTool(),
-    ],
-    sub_agents=[
-        ingestion_agent,
-        quality_agent,
-        analytics_agent,
-        insight_agent,
-        report_agent,
-        governance_agent,
-    ],
-)
+        tools=[
+            run_full_analysis_pipeline,
+            build_kpi_mcp_toolset(),
+            run_forecast,
+            get_business_context_snapshot,
+            check_publish_gate,
+            LoadMemoryTool(),
+        ],
+        sub_agents=[
+            _fresh_specialist(ingestion_agent),
+            _fresh_specialist(quality_agent),
+            _fresh_specialist(analytics_agent),
+            _fresh_specialist(insight_agent),
+            _fresh_specialist(report_agent),
+            _fresh_specialist(governance_agent),
+        ],
+    )
+
+
+root_agent = build_root_agent()

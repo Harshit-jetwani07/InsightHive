@@ -69,7 +69,7 @@ agent-owned decision workflow:
 | **Live MCP grounding** | Industry guidance is fetched through an ADK `McpToolset`, not an unused server or prewritten UI response. |
 | **Cross-session memory** | A preference stored in one ADK session is recalled from a fresh session through `LoadMemoryTool`. |
 | **Human authority** | Pending or rejected reports remain locked until an administrator approves a valid revision. |
-| **Honest resilience** | Gemini quota fallback is clearly labelled and never misrepresented as Full ADK or live MCP execution. |
+| **Honest resilience** | Automatic private three-key failover can recover from provider quota errors; deterministic fallback is clearly labelled and never misrepresented as Full ADK or live MCP execution. |
 
 ## Architecture
 
@@ -107,32 +107,54 @@ runtime flow.
 ### Autonomous Mission Control
 
 One objective produced five required evidence tools and passed all five mission
-criteria.
+criteria in 34.8 seconds.
 
-![Mission Control showing 100 percent evidence completion](docs/screenshots/mission-control-success.png)
+![Mission Control showing 100 percent evidence completion](docs/screenshots/mission-control-100-percent.png)
 
-### MCP, verified context, and forecast artifacts
+### Agent-selected tools and live trace
 
-Raw artifacts remain available for technical audit while the default result
-surface presents a human-readable Decision Brief.
+The root orchestrator selected the governed pipeline, live MCP playbook,
+forecast, report-context, and publish-gate tools. The trace records calls,
+responses, status, and latency.
 
-![MCP and forecast evidence artifacts](docs/screenshots/mcp-and-forecast-evidence.png)
+![Five completed evidence tools](docs/screenshots/five-tool-agent-execution.png)
 
-The lower artifact in this capture contains the twelve-period Revenue forecast,
-trend direction, MAE, RMSE, and forecast points. A dedicated clean Forecast-tab
-capture will replace this combined technical view in the final Kaggle Media
-Gallery.
+![Live ADK mission trace](docs/screenshots/adk-mission-trace.png)
+
+### Forecast evidence
+
+The twelve-period Revenue forecast reports an increasing trend, MAE 12,293,
+and RMSE 15,358 alongside actual and projected values.
+
+![Revenue forecast evidence](docs/screenshots/forecast-evidence.png)
+
+### Anomaly evidence
+
+The quality workflow surfaced 50 highest-priority unusual rows for review and
+rendered their anomaly-severity distribution. This capture is explicitly
+labelled as quota-resilient deterministic tool execution.
+
+![Anomaly result table](docs/screenshots/anomaly-results-table.png)
+
+![Anomaly severity chart](docs/screenshots/anomaly-severity-chart.png)
 
 ### Executive synthesis and governance result
 
 The final response separates observations, forecast, recommendations, and the
 mandatory approval requirement.
 
-![Executive mission synthesis](docs/screenshots/executive-synthesis.png)
+![Executive mission synthesis](docs/screenshots/executive-synthesis-detailed.png)
 
-Final submission media will additionally include fresh cross-session memory,
-HITL reject/revise/approve, and ten-case routing-evaluation captures from the
-deployed revision.
+### Memory and human approval
+
+![Cross-session ADK memory recall](docs/screenshots/adk-memory-recall.png)
+
+![Pending report remains locked](docs/screenshots/report-pending-human-review.png)
+
+![Approved report download unlocked](docs/screenshots/report-approved-download.png)
+
+The rendered sample PDF is available at
+[`submission/evidence/sample_approved_business_report.pdf`](submission/evidence/sample_approved_business_report.pdf).
 
 ## Course concepts demonstrated
 
@@ -259,12 +281,17 @@ writeup. Never fabricate a benchmark; record the final deployed run.
 | Deterministic evaluation latency | **2.48 seconds total** | Local Docker run; not LLM routing latency |
 | Full ADK autonomous mission | **5 / 5 evidence criteria (100%)** | Analysis, live MCP, forecast, report context, publish gate |
 | Full ADK mission tools | **5 evidence tools** | Internal agent-transfer events excluded |
+| Full ADK mission latency | **34.8 seconds** | Northstar Retail evidence run |
+| Revenue forecast | **Increasing; MAE 12,293; RMSE 15,358** | Twelve future periods |
+| Quota-resilient contract routing | **10 / 10 passed (100%)** | Deterministic intent router; not ADK routing accuracy |
 | Container health | **HTTP 200 `ok`** | Linux Docker runtime |
 | Ten-case ADK routing accuracy | **Pending final deployed run** | Must be captured with active Gemini quota |
 
 The exact deterministic artifact is committed at
 [`submission/evidence/deterministic_tool_evidence.json`](submission/evidence/deterministic_tool_evidence.json).
-Deterministic pass rate is not presented as agent-routing accuracy.
+Quota-resilient routing evidence is committed separately at
+[`submission/evidence/quota_resilient_routing_evidence.json`](submission/evidence/quota_resilient_routing_evidence.json).
+Neither deterministic score is presented as real ADK routing accuracy.
 
 ## Deployment
 

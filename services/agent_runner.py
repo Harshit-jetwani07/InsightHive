@@ -13,7 +13,7 @@ from google.adk.memory import InMemoryMemoryService
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
-from agents.orchestrator import root_agent
+from agents.orchestrator import build_root_agent
 from services.guardrails import validate_user_question
 from services.observability import TraceLogger
 
@@ -21,11 +21,13 @@ APP_NAME = "insight_hive"
 
 
 class AgentRunnerService:
+    _unavailable_keys: set[str] = set()
+
     def __init__(self) -> None:
         self.session_service = InMemorySessionService()
         self.memory_service = InMemoryMemoryService()
         self.runner = Runner(
-            agent=root_agent,
+            agent=build_root_agent(),
             app_name=APP_NAME,
             session_service=self.session_service,
             memory_service=self.memory_service,
@@ -39,6 +41,22 @@ class AgentRunnerService:
         if not key:
             raise ValueError("ADK mode requires GOOGLE_API_KEY; use Sample Intelligence Mode without it.")
         os.environ["GOOGLE_API_KEY"] = key
+
+    @staticmethod
+    def _is_retryable_provider_error(exc: Exception) -> bool:
+        """Return True only for provider failures where a backup key may help."""
+        message = str(exc).lower()
+        retryable_markers = (
+            "429",
+            "quota",
+            "resource_exhausted",
+            "rate limit",
+            "rate_limit",
+            "too many requests",
+            "503",
+            "service unavailable",
+        )
+        return any(marker in message for marker in retryable_markers)
 
     def _ensure_session(self, user_id: str, session_id: str) -> None:
         key = (user_id, session_id)
@@ -67,6 +85,25 @@ class AgentRunnerService:
 
         asyncio.run(_commit())
 
+    def search_memory_text(self, user_id: str, query: str) -> list[str]:
+        """Search the configured ADK memory service without another LLM call."""
+        async def _search():
+            return await self.memory_service.search_memory(
+                app_name=APP_NAME,
+                user_id=user_id,
+                query=query,
+            )
+
+        response = asyncio.run(_search())
+        texts: list[str] = []
+        for memory in response.memories:
+            content = getattr(memory, "content", None)
+            for part in getattr(content, "parts", []) or []:
+                text = getattr(part, "text", None)
+                if text:
+                    texts.append(text)
+        return texts
+
     def run_query(
         self,
         question: str,
@@ -74,12 +111,43 @@ class AgentRunnerService:
         user_id: str,
         session_id: str,
         api_key: Optional[str] = None,
+        _backup_index: int = 0,
     ) -> str:
         allowed, reason = validate_user_question(question)
         if not allowed:
             self.tracer.new_trace()
             self.tracer.log("guardrail_block", status="blocked", detail=reason)
             return reason
+
+        requested_key = (api_key or os.getenv("GOOGLE_API_KEY", "")).strip()
+        if requested_key in self._unavailable_keys:
+            ordered_backups = [
+                os.getenv("GOOGLE_API_KEY_2", "").strip(),
+                os.getenv("GOOGLE_API_KEY_3", "").strip(),
+            ]
+            healthy_backups = [
+                key
+                for key in ordered_backups
+                if key and key not in self._unavailable_keys
+            ]
+            if not healthy_backups:
+                return (
+                    "ADK agent error: all configured Gemini projects are temporarily "
+                    "unavailable or quota-exhausted. Quota-resilient tools remain available."
+                )
+            backup_key = healthy_backups[0]
+            next_index = ordered_backups.index(backup_key) + 1
+            backup_runner = AgentRunnerService()
+            response = backup_runner.run_query(
+                question,
+                user_id=user_id,
+                session_id=f"{session_id}-healthy-backup-{next_index + 1}",
+                api_key=backup_key,
+                _backup_index=next_index,
+            )
+            self._tool_artifacts = backup_runner.get_tool_artifacts()
+            self.tracer = backup_runner.tracer
+            return response
 
         self._ensure_api_key(api_key)
         self._ensure_session(user_id, session_id)
@@ -152,9 +220,92 @@ class AgentRunnerService:
                 latency_ms=round((time.perf_counter() - run_started) * 1000),
             )
             self._commit_session_to_memory(user_id, session_id)
+            if final_response == "No response received from the agent.":
+                current_key = (api_key or os.getenv("GOOGLE_API_KEY", "")).strip()
+                self._unavailable_keys.add(current_key)
+                backup_keys = [
+                    os.getenv("GOOGLE_API_KEY_2", "").strip(),
+                    os.getenv("GOOGLE_API_KEY_3", "").strip(),
+                ]
+                remaining_keys = [
+                    key
+                    for key in backup_keys[_backup_index:]
+                    if key and key != current_key
+                ]
+                if remaining_keys:
+                    backup_key = remaining_keys[0]
+                    next_index = backup_keys.index(backup_key) + 1
+                    backup_runner = AgentRunnerService()
+                    response = backup_runner.run_query(
+                        question,
+                        user_id=user_id,
+                        session_id=f"{session_id}-backup-{next_index + 1}",
+                        api_key=backup_key,
+                        _backup_index=next_index,
+                    )
+                    self._tool_artifacts = backup_runner.get_tool_artifacts()
+                    self.tracer = backup_runner.tracer
+                    self.tracer.log(
+                        "api_key_failover",
+                        status=(
+                            "completed"
+                            if response != "No response received from the agent."
+                            and not response.startswith("ADK agent error:")
+                            else "error"
+                        ),
+                        detail=(
+                            "Provider returned no response; "
+                            f"backup key {next_index + 1} attempted."
+                        ),
+                    )
+                    return response
             return final_response
         except Exception as exc:
             self.tracer.log("error", status="error", detail=str(exc))
+            current_key = (api_key or os.getenv("GOOGLE_API_KEY", "")).strip()
+            if self._is_retryable_provider_error(exc):
+                self._unavailable_keys.add(current_key)
+            backup_keys = [
+                os.getenv("GOOGLE_API_KEY_2", "").strip(),
+                os.getenv("GOOGLE_API_KEY_3", "").strip(),
+            ]
+            remaining_keys = [
+                key
+                for key in backup_keys[_backup_index:]
+                if key and key != current_key
+            ]
+            if (
+                remaining_keys
+                and self._is_retryable_provider_error(exc)
+            ):
+                backup_key = remaining_keys[0]
+                next_index = backup_keys.index(backup_key) + 1
+                # MCP toolsets keep async session state. A provider failure may
+                # close that event loop, so retry on a fresh ADK runner instead
+                # of reusing a partially-consumed runtime.
+                backup_runner = AgentRunnerService()
+                response = backup_runner.run_query(
+                    question,
+                    user_id=user_id,
+                    session_id=f"{session_id}-backup-{next_index + 1}",
+                    api_key=backup_key,
+                    _backup_index=next_index,
+                )
+                self._tool_artifacts = backup_runner.get_tool_artifacts()
+                self.tracer = backup_runner.tracer
+                self.tracer.log(
+                    "api_key_failover",
+                    status=(
+                        "completed"
+                        if not response.startswith("ADK agent error:")
+                        else "error"
+                    ),
+                    detail=(
+                        "Provider quota unavailable; "
+                        f"backup key {next_index + 1} attempted."
+                    ),
+                )
+                return response
             return (
                 f"ADK agent error: {exc}\n\n"
                 "Check that google-adk is installed and your Gemini API key is valid."

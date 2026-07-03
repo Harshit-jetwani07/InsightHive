@@ -63,7 +63,25 @@ the model returned fluent text.
 
 ### Mission Control proof
 
-![InsightHive Mission Control showing five evidence tools and 100 percent objective completion](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/screenshots/mission-control-success.png)
+![InsightHive Mission Control showing five evidence tools and 100 percent objective completion](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/screenshots/mission-control-100-percent.png)
+
+### Decision and forecast proof
+
+![Evidence-backed executive synthesis](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/screenshots/executive-synthesis-detailed.png)
+
+![Twelve-period Revenue forecast](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/screenshots/forecast-evidence.png)
+
+### Anomaly investigation proof
+
+![Quality-tool anomaly result table](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/screenshots/anomaly-results-table.png)
+
+### Trace, memory, and human approval proof
+
+![Five completed orchestrator tools](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/screenshots/five-tool-agent-execution.png)
+
+![Cross-session ADK memory recall](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/screenshots/adk-memory-recall.png)
+
+![Approved report download](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/screenshots/report-approved-download.png)
 
 ## Why agents?
 
@@ -187,6 +205,9 @@ registry integrity, and mission completion logic. GitHub Actions runs Python
 | Deterministic tool evaluation | **5/5 passed (100%)** | Tool execution, not LLM routing |
 | Deterministic evaluation latency | **2.48 seconds total** | Local Docker run |
 | Autonomous Full ADK mission | **5/5 evidence criteria (100%)** | Analysis, MCP, forecast, report context, publish gate |
+| Full ADK mission latency | **34.8 seconds** | Northstar Retail evidence run |
+| Revenue forecast | **Increasing; MAE 12,293; RMSE 15,358** | Twelve future periods |
+| Quota-resilient contract router | **10/10 passed (100%)** | Provider-resilience proof, not ADK routing accuracy |
 | Container health | **HTTP 200 `ok`** | Linux Docker runtime |
 
 Final ten-case ADK routing accuracy, first-attempt accuracy, and grounding judge

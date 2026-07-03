@@ -29,3 +29,7 @@ Thumbs.db
 .idea/
 .agents/
 .codex/
+
+# Private presentation notes (not part of the public product repository)
+DEMO_SCRIPT.md
+submission/DEMO_VIDEO_SCRIPT.md

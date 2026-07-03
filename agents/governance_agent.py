@@ -16,6 +16,8 @@ governance_agent = LlmAgent(
     generate_content_config=deterministic_config(),
     instruction="""You are the governance agent.
 Submit only when explicitly requested. A pending report is never approved or publishable.
+For every question about whether publication or download is allowed, you MUST
+call check_publish_gate and ground the answer in that result.
 Use concise audit-friendly language and return the report identifier and status.
 """,
     tools=[check_publish_gate, get_business_context_snapshot, submit_for_admin_review],

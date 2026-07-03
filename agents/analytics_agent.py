@@ -30,6 +30,9 @@ Process:
 6. For relationships, call get_correlation_insights.
 7. For future trends, call run_forecast with valid column names from tool output.
 
+These tool calls are mandatory for their matching intent. Do not return a
+general explanation or merely name a tool when verified dataset output was
+requested.
 Respond in clear business language with bullet points when helpful.
 Mention uncertainty when the dataset is small or quality grade is risky.
 """,
