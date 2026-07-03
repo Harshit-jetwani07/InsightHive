@@ -355,10 +355,16 @@ def execute_agent_mission(mission: str, api_key: str, industry: str) -> dict:
     st.session_state.agent_trace = trace_events
     st.session_state.mission_trace = trace_events
     artifacts = runner.get_tool_artifacts()
-    if not artifacts and (
-        not response
-        or response == "No response received from the agent."
-        or response.startswith("ADK agent error:")
+    # A provider error means the ADK turn itself is incomplete, even if one
+    # tool artifact was produced before quota exhaustion. Re-run the complete
+    # evidence contract locally so MCP-equivalent RAG grounding, forecasting,
+    # reporting context, and governance cannot be left half-finished.
+    if response.startswith("ADK agent error:") or (
+        not artifacts
+        and (
+            not response
+            or response == "No response received from the agent."
+        )
     ):
         return execute_resilient_local_mission(
             mission,

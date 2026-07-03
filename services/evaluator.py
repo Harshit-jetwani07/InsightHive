@@ -172,6 +172,12 @@ def run_agent_routing_evaluation(
             )
             selected_tools = [item["tool"] for item in runner.get_tool_artifacts()]
             selected_attempts.append(selected_tools)
+            if response.startswith("ADK agent error:"):
+                return run_resilient_routing_evaluation(
+                    "All configured Gemini/ADK projects were unavailable or "
+                    "quota-exhausted; provider-backed scoring was stopped and "
+                    "the local contract router was evaluated instead."
+                )
             if expected in selected_tools:
                 passed = True
                 break

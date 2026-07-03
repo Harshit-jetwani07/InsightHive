@@ -121,6 +121,9 @@ class AgentRunnerService:
 
         requested_key = (api_key or os.getenv("GOOGLE_API_KEY", "")).strip()
         if requested_key in self._unavailable_keys:
+            # Never expose artifacts from a previous request when the current
+            # request is rejected by the quota circuit breaker.
+            self._tool_artifacts = []
             ordered_backups = [
                 os.getenv("GOOGLE_API_KEY_2", "").strip(),
                 os.getenv("GOOGLE_API_KEY_3", "").strip(),
