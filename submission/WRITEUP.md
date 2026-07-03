@@ -211,9 +211,19 @@ registry integrity, and mission completion logic. GitHub Actions runs Python
 | Quota-resilient contract router | **10/10 passed (100%)** | Provider-resilience proof, not ADK routing accuracy |
 | Container health | **HTTP 200 `ok`** | Linux Docker runtime |
 
-Final ten-case ADK routing accuracy, first-attempt accuracy, and grounding judge
-score will be copied only from the downloadable evidence JSON produced by the
-final deployed revision. No estimated score is presented as measured evidence.
+The corresponding test logs, evaluation JSON, health proof, and screenshots are
+available in the public
+[`docs/evidence/` index](https://github.com/Harshit-jetwani07/InsightHive/tree/main/docs/evidence).
+
+![Seventeen automated tests passed](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/evidence/tests-17-passed.png)
+
+![Docker health endpoint returned HTTP 200 ok](https://raw.githubusercontent.com/Harshit-jetwani07/InsightHive/main/docs/evidence/docker-health-200.png)
+
+A stable final ten-case provider-backed ADK routing suite was not captured, so
+InsightHive does not publish that metric. The 10/10 result above is explicitly
+the quota-resilient deterministic router; it is never relabelled as Gemini/ADK
+routing accuracy. The separate autonomous Full ADK mission remains evidenced
+by its five captured tool calls and trace.
 
 InsightHive also contains a clean-source builder that uses an allow list and
 generates SHA-256 checksums. Virtual environments, databases, secrets, uploads,

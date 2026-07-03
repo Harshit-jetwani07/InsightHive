@@ -293,12 +293,10 @@ writeup. Never fabricate a benchmark; record the final deployed run.
 | Revenue forecast | **Increasing; MAE 12,293; RMSE 15,358** | Twelve future periods |
 | Quota-resilient contract routing | **10 / 10 passed (100%)** | Deterministic intent router; not ADK routing accuracy |
 | Container health | **HTTP 200 `ok`** | Linux Docker runtime |
-| Ten-case ADK routing accuracy | **Pending final deployed run** | Must be captured with active Gemini quota |
+| Ten-case provider-backed ADK routing accuracy | **Not claimed** | No stable final provider-backed suite was captured; no fallback score is relabelled as ADK |
 
-The exact deterministic artifact is committed at
-[`submission/evidence/deterministic_tool_evidence.json`](submission/evidence/deterministic_tool_evidence.json).
-Quota-resilient routing evidence is committed separately at
-[`submission/evidence/quota_resilient_routing_evidence.json`](submission/evidence/quota_resilient_routing_evidence.json).
+The corresponding test logs, evaluation JSON, health proof, and screenshots are
+indexed with direct links under [`docs/evidence/`](docs/evidence/README.md).
 Neither deterministic score is presented as real ADK routing accuracy.
 
 ## Deployment

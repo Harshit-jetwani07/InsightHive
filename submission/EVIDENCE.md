@@ -39,17 +39,16 @@ The captured Full ADK mission is real: the root orchestrator selected all five
 evidence tools, including the MCP playbook, forecast, report context, and human
 publish gate. Its trace is retained in the evidence gallery.
 
-## Final Full ADK routing evaluation
+## Provider-backed routing claim boundary
 
-These metrics remain pending until a ten-case run completes with active Gemini
-quota. Estimated or fallback values must not be copied into these rows.
+A stable final ten-case provider-backed ADK routing suite was not captured.
+Therefore no provider-backed pass rate, first-attempt accuracy, average latency,
+or grounding-judge score is claimed. The 10/10 quota-resilient result remains
+clearly labelled as deterministic routing, while the real autonomous Full ADK
+mission is supported by its five captured tool calls and trace.
 
-| Metric | Verified result |
-| --- | --- |
-| Ten-case Full ADK routing pass rate | Pending final provider-backed run |
-| Full ADK first-attempt accuracy | Pending final provider-backed run |
-| Full ADK average case latency | Pending final provider-backed run |
-| Grounding judge score | Pending final provider-backed run |
+All headline claims map to direct proof in
+[`docs/evidence/README.md`](../docs/evidence/README.md).
 
 ## Screenshot index
 

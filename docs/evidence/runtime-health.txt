@@ -1,0 +1,6 @@
+﻿InsightHive Docker runtime verification
+Verified: 2026-07-03
+Endpoint: http://localhost:8501/_stcore/health
+HTTP status: 200
+Response: ok
+Container service: insight-hive
