@@ -7,12 +7,13 @@ from agents.config import MODEL_NAME, deterministic_config
 from agents.analytics_agent import analytics_agent
 from agents.governance_agent import governance_agent
 from agents.ingestion_agent import ingestion_agent
-from agents.insight_agent import build_kpi_mcp_toolset, insight_agent
+from agents.insight_agent import build_kpi_mcp_toolset, insight_agent, live_mcp_enabled
 from agents.quality_agent import quality_agent
 from agents.report_agent import report_agent
 from tools.analytics_tools import run_forecast
 from tools.governance_tools import check_publish_gate, get_business_context_snapshot
 from tools.pipeline_tools import run_full_analysis_pipeline
+from tools.rag_tools import retrieve_kpi_context
 
 
 def _fresh_specialist(agent: LlmAgent) -> LlmAgent:
@@ -28,12 +29,30 @@ def build_root_agent() -> LlmAgent:
     ADK agents and MCP toolsets retain runtime/session state. Rebuilding them is
     required when failover switches the Gemini project behind an API key.
     """
+    mcp_enabled = live_mcp_enabled()
+    industry_tool_rule = (
+        "- industry KPI playbooks -> call mcp_get_industry_kpi_playbook;"
+        if mcp_enabled
+        else "- industry KPI playbooks -> call retrieve_kpi_context;"
+    )
+    standard_industry_step = (
+        "mcp_get_industry_kpi_playbook with the supplied industry;"
+        if mcp_enabled
+        else "retrieve_kpi_context with the supplied industry;"
+    )
+    grounding_label = (
+        "the live MCP playbook"
+        if mcp_enabled
+        else "the local KPI playbook retrieval fallback"
+    )
+    grounding_tools = [build_kpi_mcp_toolset()] if mcp_enabled else [retrieve_kpi_context]
+
     return LlmAgent(
         model=MODEL_NAME,
         name="insight_hive_orchestrator",
         description="Coordinates business analytics and governed report workflows for uploaded datasets.",
         generate_content_config=deterministic_config(),
-        instruction="""You are the orchestrator for InsightHive, an enterprise agentic decision-intelligence platform.
+        instruction=f"""You are the orchestrator for InsightHive, an enterprise agentic decision-intelligence platform.
 
 Route work like this:
 - Saved CSV/Excel upload parsing and schema checks -> ingestion_agent
@@ -59,7 +78,7 @@ tool call is invalid. Route and execute according to these mandatory rules:
 - relationships or correlations -> analytics_agent, which must call
   get_correlation_insights;
 - forecasts or future periods -> analytics_agent, which must call run_forecast;
-- industry KPI playbooks -> call mcp_get_industry_kpi_playbook;
+{industry_tool_rule}
 - executive report context -> report_agent, which must call
   get_business_context_snapshot;
 - complete governed analysis -> call run_full_analysis_pipeline;
@@ -67,6 +86,8 @@ tool call is invalid. Route and execute according to these mandatory rules:
   check_publish_gate.
 Do not merely explain which tool should be used. Execute it and base the final
 answer on its response. Delegation alone is not completion.
+For industry grounding, use {grounding_label}. If the hosted runtime is running
+in fallback mode, do not claim that a live MCP session was used.
 Use load_memory when the user asks what they previously preferred or analyzed.
 When a request starts with "AUTONOMOUS MISSION", own the plan end-to-end:
 1. Inspect the objective and active dataset.
@@ -76,7 +97,7 @@ When a request starts with "AUTONOMOUS MISSION", own the plan end-to-end:
    executive report, and approval readiness, call ALL of these tools before
    returning a final answer:
    run_full_analysis_pipeline;
-   mcp_get_industry_kpi_playbook with the supplied industry;
+   {standard_industry_step}
    run_forecast using Parsed_Date and the best available business value column;
    get_business_context_snapshot;
    check_publish_gate with report_status="pending" to prove that publication is
@@ -96,7 +117,7 @@ grounded in tool outputs.
 """,
         tools=[
             run_full_analysis_pipeline,
-            build_kpi_mcp_toolset(),
+            *grounding_tools,
             run_forecast,
             get_business_context_snapshot,
             check_publish_gate,
